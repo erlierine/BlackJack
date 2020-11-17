@@ -54,6 +54,7 @@ dkms.conf
 #Qt build 
 build-blackjack-Desktop_Qt_5_12_6_GCC_64bit-Debug/
 **/blackjack.pro.user
+**/blackjack
 
 #qmake
 **/.qmake.*
