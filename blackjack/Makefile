@@ -8,4 +8,4 @@ $(TARGET): main.c
 .PHONY: clean
 
 clean:
-	rm $(TARGET)
+	rm $(TARGET) cards/*.txt

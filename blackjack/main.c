@@ -32,8 +32,81 @@ typedef struct Card{
     char image_path[MAX_PATH_LEN];
 } card;
 
+void make_cards() {
+    int i;
+    FILE *f;
+    for(i=2;i<10;i++) {
+        char file_path[MAX_PATH_LEN];
+        sprintf (file_path, "cards/%d.txt", i);
+        file_path[strlen (file_path) - 1] = '\0';
+        printf("%s", file_path);
+        f = fopen(file_path, "w");
+        fprintf(f, "*********\n");
+        fprintf(f, "*       *\n");
+        fprintf(f, "*       *\n");
+        fprintf(f, "*   %d   *\n", i);
+        fprintf(f, "*       *\n");
+        fprintf(f, "*       *\n");
+        fprintf(f, "*********\n");
+//        fclose (f);
+    }
+
+    f = fopen("cards/10.txt", "w");
+    fprintf(f, "*********\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*  10   *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*********\n");
+    fclose (f);
+
+    f = fopen("cards/ace.txt", "w");
+    fprintf(f, "*********\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*   A   *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*********\n");
+    fclose (f);
+
+    f = fopen("cards/jack.txt", "w");
+    fprintf(f, "*********\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*   J   *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*********\n");
+    fclose (f);
+
+    f = fopen("cards/queen.txt", "w");
+    fprintf(f, "*********\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*   Q   *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*********\n");
+    fclose (f);
+
+    f = fopen("cards/king.txt", "w");
+    fprintf(f, "*********\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*   K   *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*       *\n");
+    fprintf(f, "*********\n");
+    fclose(f);
+
+    return;
+}
+
 int main(int argc, char** argv)
 {
+    make_cards ();
     if(argc <2)
     {
         // First way of processing command line args
@@ -44,7 +117,7 @@ int main(int argc, char** argv)
         // char error_msg[MSG_LENGTH];
         // strcpy(error_msg, "usage: ");
         // strcat(strcat(error_msg , argv[0]),  "<input_folder>\n");
-        // error(error_msg, EXIT_FAILURE);
+        // error(error_msg, EXIT_FAILURE
 
         // Third, easiest way
         char *error_msg = (char*)malloc (MSG_LENGTH * sizeof (char));
