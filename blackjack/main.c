@@ -24,7 +24,7 @@ int main(int argc, char** argv)
         // strcat(strcat(error_msg , argv[0]),  "<input_folder>\n");
         // error(error_msg, EXIT_FAILURE);
 
-        //Third way
+        // Third, easiest way
         char *error_msg = (char*)malloc (MSG_LENGTH * sizeof (char));
         sprintf (error_msg, "usage: %s <input_folder>\n", argv[0]);
         error(error_msg, EXIT_FAILURE);
