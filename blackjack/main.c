@@ -45,6 +45,17 @@ typedef struct Deck{
     unsigned next_card;
 } deck;
 
+typedef struct Hand{
+    card* cards[DECK_SIZE];
+    unsigned size;
+} hand;
+
+void hit(hand *h, deck* d) {
+    h->cards[h->size] = d->cards[d->next_card++];
+    h->size++;
+}
+
+
 void make_cards() {
     int i;
     FILE *f;
