@@ -11,6 +11,7 @@
 #define MAX_PATH_LEN 100
 #define LINE_LENGTH 256
 #define NUM_OF_CARDS 14
+#define DECK_SIZE 52
 
 enum card_type{
     C_ACE = 11,
@@ -39,7 +40,10 @@ typedef struct Card{
     char image_path[MAX_PATH_LEN];
 } card;
 
-
+typedef struct Deck{
+    card* cards[DECK_SIZE];
+    unsigned next_card;
+} deck;
 
 void make_cards() {
     int i;
