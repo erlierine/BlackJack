@@ -55,6 +55,61 @@ void hit(hand *h, deck* d) {
     h->size++;
 }
 
+int hand_value(hand* h)
+{
+    int i;
+    int value = 0;
+
+    int has_ace = 0;
+    for(i=0;i<h->size;i++)
+    {
+        enum card_type type = h->cards[i]->type;
+        switch (type) {
+            case C_2:
+                value += 2;
+                break;
+            case C_3:
+                value += 3;
+                break;
+            case C_4:
+                value += 4;
+                break;
+            case C_5:
+                value += 5;
+                break;
+            case C_6:
+                value += 6;
+                break;
+            case C_7:
+                value += 7;
+                break;
+            case C_8:
+                value += 8;
+                break;
+            case C_9:
+                value += 9;
+                break;
+            case C_10:
+                value += 10;
+                break;
+            case C_ACE:
+                value += 1;
+                has_ace += 1;
+                break;
+            case C_JACK:
+            case C_QUEEN:
+            case C_KING:
+                value += 10;
+                break;
+        }
+    }
+
+    if(has_ace && value <= 11)
+        value += 10;
+
+    return value;
+}
+
 
 void make_cards() {
     int i;
