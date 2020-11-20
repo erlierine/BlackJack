@@ -13,7 +13,7 @@
 #define LINE_LENGTH 256
 #define MAX_LINES 32
 #define MAX_HAND_SIZE 12
-#define NUM_OF_CARDS 14
+#define NUM_OF_CARDS 15
 #define BUFFSIZE 64
 #define DECK_SIZE 52
 
@@ -126,7 +126,7 @@ void show_hand(hand *h, char *caption)
 {
     printf("%s\n\n", caption);
     printf (BAR);
-    int i;
+    unsigned i;
 
     char **lines = malloc(MAX_LINES * sizeof (char*));
     int size = 0;
@@ -137,6 +137,7 @@ void show_hand(hand *h, char *caption)
         for(j=0;j<LINE_LENGTH;j++)
             lines[i][j] = '\0';
     }
+
 
     for(i=0;i<h->size;i++)
     {
@@ -163,10 +164,10 @@ void show_hand(hand *h, char *caption)
         fclose (f);
     }
 
-    for(i=0;i<LINE_LENGTH;i++)
+    for(i=0;i<size;i++)
         printf("%s\n", lines[i]);
 
-    for(i=0;i<LINE_LENGTH;i++)
+    for(i=0;i<MAX_LINES;i++)
         free(lines[i]);
     free(lines);
 
@@ -250,7 +251,7 @@ void check_card(card card)
 {
     FILE* f = fopen(card.image_path, "r");
     if(f == NULL)
-        error ("Reading card image failed!", 1);
+        error ("Reading cards image failed!", 1);
 
     char* line = malloc(LINE_LENGTH * sizeof (char));
     while (fgets(line, LINE_LENGTH, f) != NULL)
@@ -291,7 +292,6 @@ void init_cards(card* cards, char* map_path)
     {
         int card_index = -1;
         char* name = entry->d_name;
-        printf ("%s\n", name);
         if(strcmp (name, "2.txt") == 0)
             card_index = C_2;
         else if(strcmp (name, "3.txt") == 0)
@@ -361,8 +361,9 @@ deck new_deck(card* cards, unsigned *seed)
     deck d;
     d.next_card = 0;
     int i;
-    for(i=0;i>DECK_SIZE;i++)
-        d.cards[i] = &cards[i/4];
+    for(i=0;i<DECK_SIZE;i++){
+        d.cards[i] = &cards[(i+8)/4];
+    }
     shuffle(&d, seed);
     return d;
 }
@@ -417,6 +418,88 @@ int main(int argc, char** argv)
 
     card* cards = malloc(NUM_OF_CARDS * sizeof (card));
     init_cards (cards, map_path);
+
+    deck d = new_deck (cards, seed);
+    hand dealer;
+    hand player;
+
+    start_game(&dealer, &player, &d);
+
+    int player_has_blackjack = hand_value (&player) == 21;
+    if(player_has_blackjack)
+    {
+        dealer.size++;
+        int dealer_has_blackjack = hand_value (&dealer) == 21;
+        show_hand(&dealer, "BLACKJACK! DEALER'S CARDS:");
+
+        if(!dealer_has_blackjack)
+            printf("YOU WIN!");
+        else
+            printf("BLACKJACK! PUSH!\n");
+    }
+    else
+    {
+        char* buffer = malloc(BUFFSIZE);
+        while(1)
+        {
+            printf("HIT (h) or STAND (s)\n");
+            scanf("%s", buffer);
+
+            if(strcmp (buffer, "h") == 0)
+            {
+                hit(&player, &d);
+                show_hand (&player, "YOUR CARDS:");
+                int value = hand_value (&player);
+                if(value > 21)
+                {
+                    printf("BUST! YOU LOOSE!");
+                    break;
+                }
+                else if(value == 21)
+                    break;
+            }
+            else if(strcmp (buffer, "s") == 0)
+                break;
+        }
+        free(buffer);
+
+        int player_hand_value = hand_value (&player);
+        int dealer_hand_value = hand_value (&dealer);
+
+        if(player_hand_value <= 21)
+        {
+            printf("DEALERS TURN\n");
+
+            dealer.size++;
+
+            dealer_hand_value = hand_value (&dealer);
+            show_hand (&dealer, "DEALERS CARDS:");
+            int dealer_has_blackjack = hand_value (&dealer) == 21;
+
+            if(!dealer_has_blackjack)
+            {
+                while(dealer_hand_value < 21 && dealer_hand_value <= player_hand_value)
+                {
+                    hit(&dealer, &d);
+                    dealer_hand_value = hand_value (&dealer);
+                    printf("DEALER GETS ANOTHER CARD...\n");
+                    show_hand (&dealer, "DEALER'S CARDS:");
+                }
+
+                if(dealer_hand_value > 21)
+                    printf("BUST! YOU WIN");
+                else if(dealer_hand_value == player_hand_value)
+                    printf("PUSH!\n");
+            }
+            else
+            {
+                printf("BLACKJACK! YOU LOOSE!");
+            }
+        }
+    }
+
+
+    free(cards);
     return 0;
 }
 
