@@ -367,6 +367,22 @@ deck new_deck(card* cards, unsigned *seed)
     return d;
 }
 
+void start_game(hand* dealer, hand *player, deck* d)
+{
+    player->size = 0;
+    dealer->size = 0;
+
+    hit(player, d);
+    hit(player, d);
+
+    hit(dealer, d);
+    hit(dealer, d);
+    dealer->size--;
+
+    show_hand (player, "YOUR CARDS:");
+    show_hand (dealer, "DEALERS CARDS:");
+}
+
 int main(int argc, char** argv)
 {
 //    make_cards ();
