@@ -5,12 +5,14 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <time.h>
 
 
 #define MSG_LENGTH 200
 #define MAX_PATH_LEN 100
 #define LINE_LENGTH 256
 #define NUM_OF_CARDS 14
+#define DECK_SIZE 52
 
 enum card_type{
     C_ACE = 11,
@@ -39,7 +41,10 @@ typedef struct Card{
     char image_path[MAX_PATH_LEN];
 } card;
 
-
+typedef struct Deck{
+    card* cards[DECK_SIZE];
+    unsigned next_card;
+} deck;
 
 void make_cards() {
     int i;
@@ -202,6 +207,34 @@ void init_cards(card* cards, char* map_path)
     {
         check_card(cards[i]);
     }
+}
+
+void shuffle(deck* d, unsigned* seed)
+{
+    if(seed)
+        srand (*seed);
+    else
+        srand (time(NULL));
+    int i;
+    for(i=DECK_SIZE-1; i>=1; i--)
+    {
+        int j = ((unsigned)rand()) % (i+1);
+        card *t = d->cards[i];
+        d->cards[i] = d->cards[j];
+        d->cards[j] = t;
+    }
+
+}
+
+deck new_deck(card* cards, unsigned *seed)
+{
+    deck d;
+    d.next_card = 0;
+    int i;
+    for(i=0;i>DECK_SIZE;i++)
+        d.cards[i] = &cards[i/4];
+    shuffle(&d, seed);
+    return d;
 }
 
 int main(int argc, char** argv)
