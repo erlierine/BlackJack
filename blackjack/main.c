@@ -10,10 +10,16 @@
 #define MSG_LENGTH 200
 #define MAX_PATH_LEN 100
 #define LINE_LENGTH 256
+#define MAX_LINES 32
+#define MAX_HAND_SIZE 12
 #define NUM_OF_CARDS 14
+#define BUFFSIZE 64
 #define DECK_SIZE 52
 
-enum card_type{
+#define BAR "________________________________________________________________________________\n"
+
+enum card_type
+{
     C_ACE = 11,
     C_2 = 2,
     C_3 = 3,
@@ -35,22 +41,26 @@ void error(char* msg, int exit_code)
     exit(exit_code);
 }
 
-typedef struct Card{
+typedef struct Card
+{
     enum card_type type;
     char image_path[MAX_PATH_LEN];
 } card;
 
-typedef struct Deck{
+typedef struct Deck
+{
     card* cards[DECK_SIZE];
     unsigned next_card;
 } deck;
 
-typedef struct Hand{
+typedef struct Hand
+{
     card* cards[DECK_SIZE];
     unsigned size;
 } hand;
 
-void hit(hand *h, deck* d) {
+void hit(hand *h, deck* d)
+{
     h->cards[h->size] = d->cards[d->next_card++];
     h->size++;
 }
@@ -64,7 +74,8 @@ int hand_value(hand* h)
     for(i=0;i<h->size;i++)
     {
         enum card_type type = h->cards[i]->type;
-        switch (type) {
+        switch (type)
+        {
             case C_2:
                 value += 2;
                 break;
@@ -110,11 +121,64 @@ int hand_value(hand* h)
     return value;
 }
 
+void show_hand(hand *h, char *caption)
+{
+    printf("%s\n\n", caption);
+    printf (BAR);
+    int i;
+
+    char **lines = malloc(MAX_LINES * sizeof (char*));
+    int size = 0;
+    for(i=0;i<MAX_LINES;i++)
+    {
+        lines[i] = malloc (LINE_LENGTH);
+        int j;
+        for(j=0;j<LINE_LENGTH;j++)
+            lines[i][j] = '\0';
+    }
+
+    for(i=0;i<h->size;i++)
+    {
+        FILE* f = fopen(h->cards[i]->image_path, "r");
+        if(f == NULL)
+            error("Reading card image failed!", 1);
+        char* line = malloc(LINE_LENGTH);
+        int line_index = 0;
+
+        while(fgets(line, LINE_LENGTH, f) != NULL)
+        {
+            if(strlen(lines[line_index]) > 0)
+                sprintf (lines[line_index], "%s %s", lines[line_index], line);
+            else
+                strcpy (lines[line_index], line);
+            int n = strlen(lines[line_index]);
+            if(lines[line_index][n-1] == '\n')
+                lines[line_index][n-1] = '\0';
+            line_index++;
+
+            size = (line_index > size) > line_index : size;
+        }
+        free(line);
+        fclose (f);
+    }
+
+    for(i=0;i<LINE_LENGTH;i++)
+        printf("%s\n", lines[i]);
+
+    for(i=0;i<LINE_LENGTH;i++)
+        free(lines[i]);
+    free(lines);
+
+    printf("score:%d\n\n", hand_value (h));
+    printf (BAR);
+}
+
 
 void make_cards() {
     int i;
     FILE *f;
-    for(i=2;i<10;i++) {
+    for(i=2;i<10;i++)
+    {
         char file_path[MAX_PATH_LEN];
         sprintf (file_path, "cards/%d.txt", i);
         f = fopen(file_path, "w");
