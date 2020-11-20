@@ -433,7 +433,7 @@ int main(int argc, char** argv)
         show_hand(&dealer, "BLACKJACK! DEALER'S CARDS:");
 
         if(!dealer_has_blackjack)
-            printf("YOU WIN!");
+            printf("YOU WIN! :)");
         else
             printf("BLACKJACK! PUSH!\n");
     }
@@ -452,7 +452,7 @@ int main(int argc, char** argv)
                 int value = hand_value (&player);
                 if(value > 21)
                 {
-                    printf("BUST! YOU LOOSE!");
+                    printf("BUST! YOU LOOSE! :(");
                     break;
                 }
                 else if(value == 21)
