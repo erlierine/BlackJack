@@ -157,7 +157,7 @@ void show_hand(hand *h, char *caption)
                 lines[line_index][n-1] = '\0';
             line_index++;
 
-            size = (line_index > size) > line_index : size;
+            size = (line_index > size) ? line_index : size;
         }
         free(line);
         fclose (f);
