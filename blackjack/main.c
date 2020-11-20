@@ -326,7 +326,7 @@ void init_cards(card* cards, char* map_path)
         cards[card_index].type = card_index;
     }
 
-//    closedir (dir);
+    closedir (dir);
 
     for(i=2;i<NUM_OF_CARDS;i++)
     {
@@ -433,7 +433,7 @@ int main(int argc, char** argv)
         show_hand(&dealer, "BLACKJACK! DEALER'S CARDS:");
 
         if(!dealer_has_blackjack)
-            printf("YOU WIN! :)");
+            printf("YOU WIN! :)\n");
         else
             printf("BLACKJACK! PUSH!\n");
     }
@@ -452,7 +452,7 @@ int main(int argc, char** argv)
                 int value = hand_value (&player);
                 if(value > 21)
                 {
-                    printf("BUST! YOU LOOSE! :(");
+                    printf("BUST! YOU LOOSE! :(\n");
                     break;
                 }
                 else if(value == 21)
@@ -487,13 +487,15 @@ int main(int argc, char** argv)
                 }
 
                 if(dealer_hand_value > 21)
-                    printf("BUST! YOU WIN");
+                    printf("BUST! YOU WIN! :) \n");
                 else if(dealer_hand_value == player_hand_value)
                     printf("PUSH!\n");
+                else
+                    printf("BUST! YOU LOOSE! :(\n");
             }
             else
             {
-                printf("BLACKJACK! YOU LOOSE!");
+                printf("BLACKJACK! YOU LOOSE!\n");
             }
         }
     }
